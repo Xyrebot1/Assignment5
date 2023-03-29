@@ -54,7 +54,6 @@ app.get('/getPosts', function (req, res) {
     if (err) {
       console.log(err);
     } else {
-      console.log(body);
       var test = [];
       body.rows.forEach(function(doc) {
         console.log(doc.doc);

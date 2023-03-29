@@ -2,7 +2,7 @@
 <html>
     <head>  
         <script>    
-        function send() {
+        function sendPost() {
             fetch('/addPosts', {
                 method: 'POST',
                 body: new URLSearchParams({
@@ -18,12 +18,45 @@
             .catch(error => console.error(error))
         }
 
-        function read() {
+        function sendComment() {
+            fetch('/addComments', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    postid: document.getElementById("test").value,
+                    comment: document.getElementById("comment").value
+                }).toString(),
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded"
+                }
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error(error))
+        }
+
+        function readPosts() {
             fetch('/getPosts', {
                 method: 'GET'
             })
             .then(response => response.json())
-            .then(data => {document.getElementById("Output") = data})
+            .then(data => {document.getElementById("Output").innerHTML = (
+                data.map(post => 
+                `<div key=${post.PostID} style="border: 2px solid black;
+                    border-radius: 8px;
+                    width: 400px;
+                    margin-top: 16px;
+                    text-align:center;"> 
+                    <h3 id="test"> ${post.PostID} </h3>
+                    <h3> ${post.Topic} </h3>
+                    <h3> ${post.PostData} </h3>
+                    <div>
+                        <input type="text" id="comment">
+                        <button onclick="sendComment()">Make a comment</button> <br>
+                        <button>Read all comments</button>
+                    </div>
+                </div>`
+            ).join(''))
+        })
             .catch(error => console.error(error))
         }
 
@@ -34,8 +67,8 @@
         <input type="text" id="topic"><br><br>
         <label for="Data">Data:</label>
         <input type="text" id="data"><br><br>
-        <button onclick="send()">Add new post</button><br><br>
-        <button onclick="read()">Read all posts</button><br><br>
+        <button onclick="sendPost()">Add new post</button><br><br>
+        <button onclick="readPosts()">Read all posts</button><br><br>
         <h2>Posts</h2>
         <div id="Output"></div>
     </body>
